@@ -1,21 +1,3 @@
-Skip to content
-Enterprise
-This repository
-Search
-Pull requests
-Issues
-Gist
- @daniel-humphries
- Sign out
- Watch 0
-  Star 0  Fork 0 daniel-humphries/Inventory
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Pulse  Graphs  Settings
-Branch: master Find file Copy pathInventory/Inventory.py
-a7996dd  on Oct 24, 2017
-@daniel-humphries daniel-humphries Numerous changes
-1 contributor
-RawBlameHistory     
-2975 lines (2796 sloc)  136 KB
 from __future__ import division
 from Tkinter import *
 import tkMessageBox as tkMessageBox
