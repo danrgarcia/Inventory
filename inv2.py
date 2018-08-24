@@ -42,22 +42,15 @@ SHELF = StringVar()
 BIN = StringVar()
 GROUP = StringVar()
 BUSINESS = StringVar()
-business_choices = ['BG2','Parts','BG3','Seed Stock', 'BG4', 'BG5']
-group_choices = ['Breakfix', 'Parts', 'BG3', 'BG4', 'BG5']
 priv_choices = ['1 - Admin', '2 - User', '3 - Read Only']
-building_choices = ['US.MSC.02']
-room_choices = ['711']
+type_choices = ['Device', 'Peripheral']
+laptop_choices = ['E5450', 'E5470']
 SEARCHFIELD = StringVar()
 SEARCHFIELD2 = StringVar()
 search_choices = ['Building', 'Room Number', 'Location', 'Business', 'Vendor', 'Part Description', 'Part Number', 'Category', 'Sub-Category']
-search_choices2 = ['User Name', 'Action', 'Title', 'Extra', 'Time Stamp']
 storage_choices = ['Yes', 'No']
+search_choices2 = ['User Name', 'Action', 'Title', 'Extra', 'Time Stamp']
 search_choices3 = ['Vendor', 'Part Description', 'Part Number', 'Category', 'Sub-Category']
-VENDOR = StringVar()
-PARTDESC = StringVar()
-PARTNUM = StringVar()
-CATEGORY = StringVar()
-SUBCATEGORY = StringVar()
 COUNT = IntVar()
 MIN = IntVar()
 MAX = IntVar()
@@ -70,31 +63,14 @@ OLDUSERNAME = StringVar()
 NEWUSERNAME = StringVar()
 USERPRIV = StringVar()
 SEARCH = StringVar()
-OLDBUSINESS = StringVar()
-OLDROOMNUMBER = StringVar()
-OLDLOCATION = StringVar()
-STORAGE = StringVar()
 SEARCH2 = StringVar()
 SEARCH3 = StringVar()
-PARTID = IntVar()
-AUDIT1 = StringVar()
-AUDIT2 = StringVar()
-AUDIT3 = StringVar()
-AUDIT4 = StringVar()
-AUDIT5 = StringVar()
-AUDIT6 = StringVar()
-AUDIT7 = StringVar()
-AUDIT8 = StringVar()
-AUDIT9 = StringVar()
-AUDIT10 = StringVar()
-AUDIT11 = StringVar()
-AUDIT12 = StringVar()
-AUDIT13 = StringVar()
-AUDIT14 = StringVar()
-AUDIT15 = StringVar()
-CURRENTBUS = StringVar()
-BELONGING = StringVar()
-SEND_BUSINESS = StringVar()
+TYPE = StringVar()
+NAME = StringVar()
+MODEL = StringVar()
+SERIALNUM = StringVar()
+LOCATION = StringVar()
+STATUS = StringVar()
 
 currentPage = IntVar()
 startPos = IntVar()
@@ -112,7 +88,7 @@ def Database():
     conn = sqlite3.connect(dbLocation)
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS `users` (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username TEXT, password TEXT, privlevel INTEGER)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS `parts` (item_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, building TEXT, roomnumber TEXT, location TEXT, business TEXT, vendor TEXT, partdesc TEXT, partnum TEXT, category TEXT, subcategory TEXT, count INTEGER, storage TEXT)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS `parts` (item_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, type TEXT, model TEXT, count INTEGER)")
     cursor.execute("CREATE TABLE IF NOT EXISTS 'log' (log_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username TEXT, action TEXT, title TEXT, extra TEXT, timestamp TEXT)")
     cursor.execute("SELECT * FROM `users` WHERE `username` = 'admin'")
     if cursor.fetchone() is None:
@@ -238,23 +214,23 @@ def UserForm():
     MidUserForm = Frame(userform, width=600)
     MidUserForm.pack(side=TOP, pady=50)
     MidUserForm.config(bg="#202020")
-    lbl_username = Label(MidUserForm, text="New Username:", font=('arial', 25), fg="#BDBDBD", bg="#202020", bd=18)
+    lbl_username = Label(MidUserForm, text="New Username:", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=18)
     lbl_username.grid(row=0)
-    lbl_newpassword1 = Label(MidUserForm, text="New Password:", font=('arial', 25), fg="#BDBDBD", bg="#202020", bd=18)
+    lbl_newpassword1 = Label(MidUserForm, text="New Password:", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=18)
     lbl_newpassword1.grid(row=1)
-    lbl_newpassword2 = Label(MidUserForm, text="Retype Password:", font=('arial', 25), fg="#BDBDBD", bg="#202020", bd=18)
+    lbl_newpassword2 = Label(MidUserForm, text="Retype Password:", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=18)
     lbl_newpassword2.grid(row=2)
-    lbl_userpriv = Label(MidUserForm, text="Privilege Level", font=('arial', 25), fg="#BDBDBD", bg="#202020", bd=18)
+    lbl_userpriv = Label(MidUserForm, text="Privilege Level:", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=18)
     lbl_userpriv.grid(row=3)
-    newusername = Entry(MidUserForm, textvariable=NEWUSERNAME, font=('arial', 25), width=15)
+    newusername = Entry(MidUserForm, textvariable=NEWUSERNAME, font=('arial', 15), width=15)
     newusername.grid(row=0, column=1)
-    oldpassword = Entry(MidUserForm, textvariable=NEWPASSWORD1, font=('arial', 25), width=15, show="*")
+    oldpassword = Entry(MidUserForm, textvariable=NEWPASSWORD1, font=('arial', 15), width=15, show="*")
     oldpassword.grid(row=1, column=1)
-    newpassword1 = Entry(MidUserForm, textvariable=NEWPASSWORD2, font=('arial', 25), width=15, show="*")
+    newpassword1 = Entry(MidUserForm, textvariable=NEWPASSWORD2, font=('arial', 15), width=15, show="*")
     newpassword1.grid(row=2, column=1)
     opt_priv = OptionMenu(MidUserForm, USERPRIV, *priv_choices)
     opt_priv.grid(row=3, column=1)
-    opt_priv.config(bg="#202020", width=15)
+    opt_priv.config(width=15)
     btn_changepass = Button(MidUserForm, text="Add User", font=('arial', 18), width=30, highlightbackground="#202020", command=AddUser)
     btn_changepass.grid(row=4, columnspan=2, pady=20)
     btn_changepass.bind('<Return>', AddUser)
@@ -467,9 +443,9 @@ def ShowEdit():
 def ShowSku():
     global skuForm
     skuForm = Toplevel()
-    skuForm.title("New SKU")
+    skuForm.title("New Part")
     width = 400
-    height = 450
+    height = 400
     screen_width = Home.winfo_screenwidth()
     screen_height = Home.winfo_screenheight()
     x = (screen_width/2) - (width/2)
@@ -482,36 +458,28 @@ def SkuForm():
     TopAddNew = Frame(skuForm, width=400, height=100, bd=1, relief=SOLID)
     TopAddNew.pack(side=TOP, pady=20)
     skuForm.config(bg="#202020")
-    lbl_text = Label(TopAddNew, text="New SKU", font=('arial', 18), width=600, fg="#BDBDBD", bg="#202020")
+    lbl_text = Label(TopAddNew, text="New Part", font=('arial', 18), width=600, fg="#BDBDBD", bg="#202020")
     lbl_text.pack(fill=X)
     MidAddNew3 = Frame(skuForm, width=600)
-    MidAddNew3.pack(side=TOP, pady=50)
+    MidAddNew3.pack(side=TOP, pady=30)
     MidAddNew3.config(bg="#202020")
-    lbl_vendor = Label(MidAddNew3, text="Vendor", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=10)
-    lbl_vendor.grid(row=0, column=0, sticky=W)
-    lbl_partdesc = Label(MidAddNew3, text="Part Description", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=10)
-    lbl_partdesc.grid(row=1, column=0, sticky=W)
-    lbl_partnum = Label(MidAddNew3, text="Part Number", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=10)
-    lbl_partnum.grid(row=2, column=0, sticky=W)
-    lbl_category = Label(MidAddNew3, text="Category", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=10)
-    lbl_category.grid(row=3, column=0, sticky=W)
-    lbl_subcategory = Label(MidAddNew3, text="Sub-Category", font=('arial', 15), fg="#BDBDBD", bg="#202020", bd=10)
-    lbl_subcategory.grid(row=4, column=0, sticky=W)
-    ent_vendor = Entry(MidAddNew3, textvariable=VENDOR, font=('arial', 15), width=15)
-    ent_vendor.grid(row=0, column=1)
-    ent_partdesc = Entry(MidAddNew3, textvariable=PARTDESC, font=('arial', 15), width=15)
-    ent_partdesc.grid(row=1, column=1)
-    ent_partnum = Entry(MidAddNew3, textvariable=PARTNUM, font=('arial', 15), width=15)
-    ent_partnum.grid(row=2, column=1)
-    ent_category = Entry(MidAddNew3, textvariable=CATEGORY, font=('arial', 15), width=15)
-    ent_category.grid(row=3, column=1)
-    ent_subcategory = Entry(MidAddNew3, textvariable=SUBCATEGORY, font=('arial', 15), width=15)
-    ent_subcategory.grid(row=4, column=1)
-    btn_addsku = Button(MidAddNew3, text="Add", font=('arial', 18), width=30, bg="#009ACD", highlightbackground="#202020", command=NewSku)
-    btn_addsku.grid(row=6, columnspan=2, pady=20)
-    btn_cancel = Button(MidAddNew3, text="Cancel", font=('arial', 18), width=30, bg="#009ACD", highlightbackground="#202020", command=CancelSku)
-    btn_addsku.grid(row=7, columnspan=2, pady=20)
-
+    lbl_type = Label(MidAddNew3, text="Type", font=('arial', 10), fg="#BDBDBD", bg="#202020", bd=10)
+    lbl_type.grid(row=0, column=0, sticky=W)
+    lbl_model = Label(MidAddNew3, text="Model", font=('arial', 10), fg="#BDBDBD", bg="#202020", bd=10)
+    lbl_model.grid(row=1, column=0, sticky=W)
+    lbl_count= Label(MidAddNew3, text="Count", font=('arial', 10), fg="#BDBDBD", bg="#202020", bd=10)
+    lbl_count.grid(row=2, column=0, sticky=W)
+    opt_type = OptionMenu(MidAddNew3, TYPE, *type_choices)
+    opt_type.grid(row=0, column=1)
+    opt_type.config(width=15)
+    ent_model = Entry(MidAddNew3, textvariable=MODEL, font=('arial', 10),width=15)
+    ent_model.grid(row=1, column=1)
+    ent_count = Entry(MidAddNew3, textvariable=COUNT, font=('arial', 10),width=15)
+    ent_count.grid(row=2, column=1)
+    btn_addsku = Button(MidAddNew3, text="Add", font=('arial', 12), width=30, highlightbackground="#202020", command=NewSku)
+    btn_addsku.grid(row=4, columnspan=2, pady=10)
+    btn_cancelsku = Button(MidAddNew3, text="Cancel", font=('arial', 12), width=30, highlightbackground="#202020", command=CancelSku)
+    btn_cancelsku.grid(row=5, columnspan=2, pady=10)
 
 
 def EditForm():
@@ -1561,10 +1529,12 @@ def AddNewForm():
 
 def NewSku():
     Database()
-    if VENDOR.get() == "" or PARTDESC.get() == "" or PARTNUM.get() == "" or CATEGORY.get() == "" or SUBCATEGORY.get() == "":
+    if not isinstance(COUNT.get(), int):
+        messagebox.showerror('Incorrect info', 'Please verify count is an integer')
+    elif TYPE.get() == "" or MODEL.get() == "":
         messagebox.showerror('Missing Info', 'Please add missing information.', icon="error")
     else:
-        cursor.execute("SELECT * FROM `parts` WHERE `vendor` COLLATE NOCASE = ? AND `partnum` COLLATE NOCASE = ?", (VENDOR.get(), PARTNUM.get()))
+        cursor.execute("SELECT * FROM `parts` WHERE `type` COLLATE NOCASE = ? AND 'model' COLLATE NOCASE = ?", (TYPE.get(), MODEL.get()))
         if cursor.fetchone() is not None:
             messagebox.showerror('Part Exists', 'Part already exists in inventory', icon="info")
             VENDOR.set("")
@@ -1573,26 +1543,25 @@ def NewSku():
             CATEGORY.set("")
             SUBCATEGORY.set("")
         else:
-            cursor.execute("INSERT INTO `parts` (vendor, partdesc, partnum, category, subcategory) VALUES(?, ?, ?, ?, ?)", (str(VENDOR.get()), str(PARTDESC.get()), str(PARTNUM.get()), str(CATEGORY.get()), str(SUBCATEGORY.get())))
+            cursor.execute("INSERT INTO 'parts' (type, model, count) VALUES(?, ?, ?)", str(TYPE.get()), str(MODEL.get()), int(COUNT.get()))
             conn.commit()
-            Log('Created SKU', PARTDESC.get(), "")
-            SendEmail('Created SKU', PARTDESC.get(), PARTNUM.get(), "")
-            VENDOR.set("")
-            PARTDESC.set("")
-            PARTNUM.set("")
-            CATEGORY.set("")
-            SUBCATEGORY.set("")
-            messagebox.showinfo('Created SKU', 'Successfully created new SKU', icon="info")
+            Log('Created Part', PARTDESC.get(), "")
+            TYPE.set("")
+            MODEL.set("")
+            COUNT.set(0)
+            messagebox.showinfo('Created Part', 'Successfully created new Part', icon="info")
             ResetSku()
             skuForm.withdraw()
         conn.close()
 
 def CancelSku():
-    VENDOR.set("")
-    PARTDESC.set("")
-    PARTNUM.set("")
-    CATEGORY.set("")
-    SUBCATEGORY.set("")
+    TYPE.set("")
+    SUBTYPE.set("")
+    NAME.set("")
+    MODEL.set("")
+    SERIALNUM.set("")
+    LOCATION.set("")
+    STATUS.set("")
     skuForm.withdraw()
 
 def AddNew():
@@ -2070,7 +2039,7 @@ def ViewForm():
     if privlevel == 1:
         lbl_seperate = Label(LeftViewForm, text="----------------------------------------", font=('arial', 15), fg="#BDBDBD", bg="#202020")
         lbl_seperate.pack(side=TOP, anchor='center')
-        btn_add = Button(LeftViewForm, text="Add Part", highlightbackground="#202020", command=ShowParts2)
+        btn_add = Button(LeftViewForm, text="Add Part", highlightbackground="#202020", command=ShowSku)
         btn_add.pack(side=TOP, padx=10, pady=10, fill=X)
         btn_edit = Button(LeftViewForm, text="Edit Part", highlightbackground="#202020", command=EditSelect)
         btn_edit.pack(side=TOP, padx=10, pady=10, fill=X)
@@ -2080,40 +2049,26 @@ def ViewForm():
         lbl_seperate.pack(side=TOP, anchor='center')
     scrollbarx = Scrollbar(MidViewForm, orient=HORIZONTAL)
     scrollbary = Scrollbar(MidViewForm, orient=VERTICAL)
-    tree = ttk.Treeview(MidViewForm, columns=("item_id", "type", "subtype", "name", "model", "serial", "location", "status"), selectmode="extended", height=100, yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+    tree = ttk.Treeview(MidViewForm, columns=("item_id", "type", "model", "count"), selectmode="extended", height=100, yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
     ttk.Style().configure("Treeview", background="#CCBFB7", foreground="#000000", fieldbackground="#CCBFB7")
     tree['show'] = 'headings'
     scrollbary.config(command=tree.yview)
     scrollbary.pack(side=RIGHT, fill=Y)
     scrollbarx.config(command=tree.xview)
     scrollbarx.pack(side=BOTTOM, fill=X)
-    tree.heading('item_id', text="Inventory ID",anchor='center', command=lambda: \
-                    treeview_sort_column(tree, 'item_id', False))
+    tree.heading('item_id', text="Item ID", anchor='center', command=lambda: \
+                    treeview_sort_column(tree2, 'User_Id', False))
     tree.heading('type', text="Type",anchor='center', command=lambda: \
-                    treeview_sort_column(tree, 'Building', False))
-    tree.heading('subtype', text="Subtype",anchor='center', command=lambda: \
-                    treeview_sort_column(tree, 'RoomNum', False))
-    tree.heading('name', text="Name", anchor='center', command=lambda: \
-                    treeview_sort_column(tree, 'Location', False))
-    tree.heading('model', text="Model", anchor='center', command=lambda: \
-                    treeview_sort_column(tree, 'Business', False))
-    tree.heading('serial', text="Serial Number", anchor='center', command=lambda: \
-                    treeview_sort_column(tree, 'Vendor', False))
-    tree.heading('location', text="Location", anchor='center', command=lambda: \
-                    treeview_sort_column(tree, 'PartDesc', False))
-    tree.heading('status', text="Status", anchor='center', command=lambda: \
-                    treeview_sort_column(tree, 'PartNum', False))
+                    treeview_sort_column(tree2, 'type', False))
+    tree.heading('model', text="Model",anchor='center', command=lambda: \
+                    treeview_sort_column(tree2, 'subtype', False))
+    tree.heading('count', text="Count",anchor='center', command=lambda: \
+                    treeview_sort_column(tree2, 'name', False))
     tree.column('#1', stretch=NO, minwidth=40, width=80)
-    tree.column('#2', stretch=NO, minwidth=40, width=100)
-    tree.column('#3', stretch=NO, minwidth=40, width=100)
+    tree.column('#2', stretch=NO, minwidth=40, width=170)
+    tree.column('#3', stretch=NO, minwidth=40, width=170)
     tree.column('#4', stretch=NO, minwidth=40, width=80)
-    tree.column('#5', stretch=NO, minwidth=40, width=100)
-    tree.column('#6', stretch=NO, minwidth=40, width=80)
-    tree.column('#7', stretch=NO, minwidth=40, width=260)
-    tree.column('#8', stretch=NO, minwidth=40, width=300)
     tree.pack()
-    if CURRENTBUS.get() == "Parts":
-        DisplayDataParts()
 
 def ClearFilter():
     if CURRENTBUS.get() == "Parts":
@@ -2712,14 +2667,14 @@ def ShowParts():
     global viewform
     viewform = Toplevel()
     viewform.title("OnQ HelpDesk Inventory/View Inventory")
-    width = 1200
+    width = 820
     height = 800
     screen_width = Home.winfo_screenwidth()
     screen_height = Home.winfo_screenheight()
     x = (screen_width/2) - (width/2)
     y = (screen_height/2) - (height/2)
     viewform.geometry("%dx%d+%d+%d" % (width, height, x, y))
-    viewform.resizable(1, 1)
+    viewform.resizable(0, 0)
     ViewForm()
 
 def ShowUserConfiguration():
