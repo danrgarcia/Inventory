@@ -1543,9 +1543,10 @@ def NewSku():
             CATEGORY.set("")
             SUBCATEGORY.set("")
         else:
-            cursor.execute("INSERT INTO 'parts' (type, model, count) VALUES(?, ?, ?)", str(TYPE.get()), str(MODEL.get()), int(COUNT.get()))
+
+            cursor.execute("INSERT INTO `parts` (type, model, count) VALUES(?, ?, ?)", (str(TYPE.get()), str(MODEL.get()), int(COUNT.get())))
             conn.commit()
-            Log('Created Part', PARTDESC.get(), "")
+            Log('Created Part', MODEL.get(), "")
             TYPE.set("")
             MODEL.set("")
             COUNT.set(0)
@@ -1556,12 +1557,8 @@ def NewSku():
 
 def CancelSku():
     TYPE.set("")
-    SUBTYPE.set("")
-    NAME.set("")
     MODEL.set("")
-    SERIALNUM.set("")
-    LOCATION.set("")
-    STATUS.set("")
+    COUNT.set(0)
     skuForm.withdraw()
 
 def AddNew():
@@ -2043,7 +2040,7 @@ def ViewForm():
         btn_add.pack(side=TOP, padx=10, pady=10, fill=X)
         btn_edit = Button(LeftViewForm, text="Edit Part", highlightbackground="#202020", command=EditSelect)
         btn_edit.pack(side=TOP, padx=10, pady=10, fill=X)
-        btn_delete = Button(LeftViewForm, text="Delete Part", highlightbackground="#202020", command=Delete)
+        btn_delete = Button(LeftViewForm, text="Delete Part", highlightbackground="#202020", command=DeleteParts)
         btn_delete.pack(side=TOP, padx=10, pady=10, fill=X)
         lbl_seperate = Label(LeftViewForm, text="----------------------------------------", font=('arial', 15), fg="#BDBDBD", bg="#202020")
         lbl_seperate.pack(side=TOP, anchor='center')
@@ -2057,7 +2054,7 @@ def ViewForm():
     scrollbarx.config(command=tree.xview)
     scrollbarx.pack(side=BOTTOM, fill=X)
     tree.heading('item_id', text="Item ID", anchor='center', command=lambda: \
-                    treeview_sort_column(tree2, 'User_Id', False))
+                    treeview_sort_column(tree2, 'item_id', False))
     tree.heading('type', text="Type",anchor='center', command=lambda: \
                     treeview_sort_column(tree2, 'type', False))
     tree.heading('model', text="Model",anchor='center', command=lambda: \
@@ -2236,7 +2233,7 @@ def DisplayParts():
     cursor.execute("SELECT * FROM 'parts'")
     fetch = cursor.fetchall()
     for data in fetch:
-        tree4.insert('', 'end', values=(data))
+        tree.insert('', 'end', values=(data))
     cursor.close()
     conn.close()
 
@@ -2469,7 +2466,7 @@ def ClearLogFilter():
     DisplayLog()
 
 def ResetSku():
-    tree4.delete(*tree4.get_children())
+    tree.delete(*tree.get_children())
     DisplayParts()
 
 def ResetParts():
@@ -2511,20 +2508,6 @@ def ClearLog():
         cursor.close()
         conn.close()
         Reset3()
-
-def Delete():
-    if CURRENTBUS.get() == "Parts":
-        DeleteParts()
-    if CURRENTBUS.get() == "BG4":
-        DeleteTer()
-    if CURRENTBUS.get() == "BG5":
-        DeleteTri()
-    if CURRENTBUS.get() == "BG3":
-        DeletePie()
-    if CURRENTBUS.get() == "BG2":
-        DeleteAmp()
-    if CURRENTBUS.get() == "Seed":
-        DeleteSeed()
 
 def DeleteParts():
     if not tree.selection():
