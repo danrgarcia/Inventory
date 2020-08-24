@@ -14,7 +14,7 @@ from random import randint
 from passlib.hash import pbkdf2_sha256
 
 root = Tk()
-root.title("OnQ HelpDesk Inventory")
+root.title("HelpDesk Inventory")
 
 width = 612
 height = 360
@@ -81,10 +81,8 @@ totalPages = IntVar()
 
 def Database():
     global conn, cursor, path
-    #path = "/Volumes/Inventory"
-    #dbLocation = path + "/mscinventory.db"
     path = get_script_path()
-    dbLocation = path + "/onqinventory.db"
+    dbLocation = path + "/inventory.db"
     conn = sqlite3.connect(dbLocation)
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS `users` (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username TEXT, password TEXT, privlevel INTEGER)")
@@ -95,19 +93,19 @@ def Database():
         hash = pbkdf2_sha256.hash("admin", rounds=2000, salt_size=16)
         cursor.execute("INSERT INTO `users` (username, password, privlevel) VALUES(?, ?, ?)", ('admin', hash, 1))
         conn.commit()
-        messagebox.showinfo('OnQ HelpDesk Inventory', "Default 'admin' account created with password 'admin'.")
+        messagebox.showinfo('HelpDesk Inventory', "Default 'admin' account created with password 'admin'.")
 
 def get_script_path():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 def Exit():
-    result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to exit?', icon="warning")
+    result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to exit?', icon="warning")
     if result == 'yes':
         root.destroy()
         exit()
 
 def Exit2():
-    result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to exit?', icon="warning")
+    result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to exit?', icon="warning")
     if result == 'yes':
         Home.destroy()
         exit()
@@ -115,7 +113,7 @@ def Exit2():
 def ShowLoginForm():
     global loginform
     loginform = Toplevel()
-    loginform.title("OnQ HelpDesk Inventory/Account Login")
+    loginform.title("HelpDesk Inventory/Account Login")
     width = 600
     height = 400
     screen_width = root.winfo_screenwidth()
@@ -156,7 +154,7 @@ def Home():
     global Home
     Home = Tk()
     Home.protocol("WM_DELETE_WINDOW", Exit)
-    Home.title("OnQ HelpDesk Inventory/Home")
+    Home.title("HelpDesk Inventory/Home")
     width = 612
     height = 600
     screen_width = Home.winfo_screenwidth()
@@ -167,7 +165,7 @@ def Home():
     Home.resizable(0, 0)
     Title = Frame(Home, bd=1, relief=SOLID)
     Title.grid(row=0, padx=40)
-    lbl_display = Label(Title, text="OnQ HelpDesk Inventory", font=('arial', 35), fg="#BDBDBD", bg="#202020")
+    lbl_display = Label(Title, text="HelpDesk Inventory", font=('arial', 35), fg="#BDBDBD", bg="#202020")
     lbl_display.grid(row=0)
     info = "User: " + str(user_name)
     lbl_info = Label(Home, text=info, font=('arial', 15), bd=18, fg="#BDBDBD", bg="#202020")
@@ -1309,7 +1307,7 @@ def CheckInSeed():
 def ShowAudit():
     global auditnewform
     auditnewform = Toplevel()
-    auditnewform.title("OnQ HelpDesk Inventory/Audit")
+    auditnewform.title("HelpDesk Inventory/Audit")
     width = 300
     height = 300
     screen_width = Home.winfo_screenwidth()
@@ -1352,7 +1350,7 @@ def save_changes():
 def ShowAddNew():
     global addnewform
     addnewform = Toplevel()
-    addnewform.title("OnQ HelpDesk Inventory/Add new")
+    addnewform.title("HelpDesk Inventory/Add new")
     width = 400
     height = 700
     screen_width = Home.winfo_screenwidth()
@@ -1778,7 +1776,7 @@ def ShowParts2():
     global partsform
     SEARCH2.set("")
     partsform = Toplevel()
-    partsform.title("OnQ HelpDesk Inventory/Parts")
+    partsform.title("HelpDesk Inventory/Parts")
     width = 1200
     height = 800
     scree_width = Home.winfo_screenwidth()
@@ -1792,7 +1790,7 @@ def ShowParts2():
 def ShowLogs():
     global logform
     logform = Toplevel()
-    logform.title("OnQ HelpDesk Inventory/View Log")
+    logform.title("HelpDesk Inventory/View Log")
     width = 1200
     height = 800
     screen_width = Home.winfo_screenwidth()
@@ -2500,7 +2498,7 @@ def ResetSeed():
     SEARCH.set("")
 
 def ClearLog():
-    result = messagebox.askquestion('OnQ HelpDesk Log', 'Are you sure you want to clear the log?', icon="warning")
+    result = messagebox.askquestion('HelpDesk Log', 'Are you sure you want to clear the log?', icon="warning")
     if result == 'yes':
         Database()
         cursor.execute("DELETE FROM 'log'")
@@ -2513,7 +2511,7 @@ def DeleteParts():
     if not tree.selection():
        print("ERROR")
     else:
-        result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
+        result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
         if result == 'yes':
             curItem = tree.focus()
             contents =(tree.item(curItem))
@@ -2532,7 +2530,7 @@ def DeletePie():
     if not tree.selection():
        print("ERROR")
     else:
-        result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
+        result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
         if result == 'yes':
             curItem = tree.focus()
             contents =(tree.item(curItem))
@@ -2551,7 +2549,7 @@ def DeleteTer():
     if not tree.selection():
        print("ERROR")
     else:
-        result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
+        result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
         if result == 'yes':
             curItem = tree.focus()
             contents =(tree.item(curItem))
@@ -2570,7 +2568,7 @@ def DeleteTri():
     if not tree.selection():
        print("ERROR")
     else:
-        result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
+        result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
         if result == 'yes':
             curItem = tree.focus()
             contents =(tree.item(curItem))
@@ -2589,7 +2587,7 @@ def DeleteAmp():
     if not tree.selection():
        print("ERROR")
     else:
-        result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
+        result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
         if result == 'yes':
             curItem = tree.focus()
             contents =(tree.item(curItem))
@@ -2608,7 +2606,7 @@ def DeleteSeed():
     if not tree.selection():
        print("ERROR")
     else:
-        result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
+        result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to remove this part?', icon="warning")
         if result == 'yes':
             curItem = tree.focus()
             contents =(tree.item(curItem))
@@ -2632,11 +2630,11 @@ def DelUser():
     contents2 = (tree2.item(curItem2))
     selecteditem2 = contents2['values']
     if selecteditem2[1] == 'admin':
-        messagebox.showerror('OnQ HelpDesk Inventory', 'Unable to delete admin account', icon="warning")
+        messagebox.showerror('HelpDesk Inventory', 'Unable to delete admin account', icon="warning")
     elif selecteditem2[1] == user_name:
-        messagebox.showerror('OnQ HelpDesk Inventory', 'Unable to delete active user', icon="warning")
+        messagebox.showerror('HelpDesk Inventory', 'Unable to delete active user', icon="warning")
     else:
-        result2 = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to delete this user?', icon="warning")
+        result2 = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to delete this user?', icon="warning")
         tree2.delete(curItem2)
         Database()
         cursor.execute("DELETE FROM `users` WHERE `user_id` = %d" % selecteditem2[0])
@@ -2649,7 +2647,7 @@ def DelUser():
 def ShowParts():
     global viewform
     viewform = Toplevel()
-    viewform.title("OnQ HelpDesk Inventory/View Inventory")
+    viewform.title("HelpDesk Inventory/View Inventory")
     width = 820
     height = 800
     screen_width = Home.winfo_screenwidth()
@@ -2713,7 +2711,7 @@ def sendemail(from_addr, to_addr_list, cc_addr_list,
     return problems
 
 def Logout():
-    result = messagebox.askquestion('OnQ HelpDesk Inventory', 'Are you sure you want to logout?', icon="warning")
+    result = messagebox.askquestion('HelpDesk Inventory', 'Are you sure you want to logout?', icon="warning")
     if result == 'yes':
         user_id = ""
         root.deiconify()
@@ -2775,13 +2773,13 @@ Title = Frame(root, bd=1, relief=SOLID)
 Title.pack(pady=10)
 
 #========================================LABEL WIDGET=====================================
-lbl_display = Label(Title, text="OnQ HelpDesk Inventory", font=('arial', 35), bg="#202020", fg="#BDBDBD")
+lbl_display = Label(Title, text="HelpDesk Inventory", font=('arial', 35), bg="#202020", fg="#BDBDBD")
 lbl_display.pack()
 btn_newlogin = Button(root, text="Login", font=('arial', 18), width=10, pady=10, command=ShowLoginForm, highlightbackground="#202020")
 btn_newlogin.pack(pady=20)
 btn_exit = Button(root, text="Exit", font=('arial', 18), width=10, pady=10, command=Exit, highlightbackground="#202020")
 btn_exit.pack()
-lbl_email = Label(root, text="v1.1 by daniel.garcia@onqfincancial.com", font=('arial', 10), pady=60, fg="#BDBDBD", bg="#202020")
+lbl_email = Label(root, text="v1.1 by email@gmail.com", font=('arial', 10), pady=60, fg="#BDBDBD", bg="#202020")
 lbl_email.pack()
 
 
