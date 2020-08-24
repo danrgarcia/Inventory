@@ -2965,7 +2965,7 @@ btn_newlogin = Button(root, text="Login", font=('arial', 18), width=10, pady=20,
 btn_newlogin.pack()
 btn_exit = Button(root, text="Exit", font=('arial', 18), width=10, pady=20, command=Exit, highlightbackground="#202020")
 btn_exit.pack()
-lbl_email = Label(root, text="v1.3 by danrhumphries@gmail.com", font=('arial', 18), pady=60, fg="#BDBDBD", bg="#202020")
+lbl_email = Label(root, text="v1.3 by email@gmail.com", font=('arial', 18), pady=60, fg="#BDBDBD", bg="#202020")
 lbl_email.pack()
 
 
